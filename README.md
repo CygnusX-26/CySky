@@ -6,7 +6,7 @@ A WIP Hypixel Skyblock Statistics bot coded in python and powered by Hypixel, Se
 **accounts.db** is used to store verification information linking the users discord ID to their minecraft username.
 
 ## Prefix
-My Prefix is /s
+My Prefix is s/
 
 ## Getting started
 1. Clone this repository
