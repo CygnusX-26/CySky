@@ -51,7 +51,7 @@ class Profiles(commands.Cog):
                 embed = discord.Embed()
                 embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
                 embed.add_field(name='Error `Unverified`', value=f"""Uh oh! Looks like the discord account you are using has not been verified. 
-                Link your minecraft account with &verify [accountname]""", inline=True)
+                Link your minecraft account with s/verify [accountname]""", inline=True)
                 await ctx.send(embed=embed)
                 return
 

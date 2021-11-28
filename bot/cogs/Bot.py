@@ -24,7 +24,7 @@ class bot(commands.Cog):
         embed.set_footer(
             text='Coded in python, powered by the Hypixel, Slothpixel, Senither, and Skycrypt APIs')
         embed.add_field(name='List of Commands', value='''
-        > Verify your Minecraft account with &verify first!
+        > Verify your Minecraft account with s/verify first!
         `help` ▹ displays this menu!
         `ah` ▹ displays auction info for a specified player.
         `bz` ▹ displays bazaar info for a specified item.
