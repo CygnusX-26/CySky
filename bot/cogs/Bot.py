@@ -32,5 +32,6 @@ class bot(commands.Cog):
         `latest` ▹ displays the latest skyblock update information.
         `profile` ▹ displays the user's Skyblock profiles and their IDs.
         `weight` ▹ displays current Senither player weight.
+        Invite the bot to your server [here](https://discord.com/api/oauth2/authorize?client_id=277588583693680640&permissions=277025508352&scope=bot)
         ''', inline=False)
         await ctx.send(embed=embed)
