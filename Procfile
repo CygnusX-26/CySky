@@ -1,2 +1,2 @@
 web: gunicorn
-worker: python3 bot.discordBot.py
+worker: python3 bot/discordBot.py
