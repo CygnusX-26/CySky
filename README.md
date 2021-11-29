@@ -11,7 +11,7 @@ My Prefix is s/
 ## Getting started
 1. Clone this repository
 2. Install the required dependencies
-3. Create environment variables called "API_KEY" and "DISCORD_BOT_TOKEN" and set them to your hypixel api key and discord api key respectively
+3. Create environment variables called "API_KEY", "DISCORD_BOT_TOKEN", and "DISCORD_BOT_PREFIX". Set them to your hypixel api key discord api key and bot prefix respectively.
 4. Run the bot
 
 ## Default Commands
