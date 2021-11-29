@@ -1,14 +1,14 @@
 import discord
 import os
 from discord.ext import commands
-from cogs.Verify import Verify
-from cogs.Profiles import Profiles
-from cogs.Weight import Weight
-from cogs.BazaarTop import BazaarTop
-from cogs.Auction import Auction
-from cogs.Bazaar import Bazaar
-from cogs.Bot import bot
-from cogs.LastestUpdate import LatestUpdate
+from bot.cogs.Verify import Verify
+from bot.cogs.Profiles import Profiles
+from bot.cogs.Weight import Weight
+from bot.cogs.BazaarTop import BazaarTop
+from bot.cogs.Auction import Auction
+from bot.cogs.Bazaar import Bazaar
+from bot.cogs.Bot import bot
+from bot.cogs.LastestUpdate import LatestUpdate
 import sqlite3
 
 conn = sqlite3.connect('accounts.db')
