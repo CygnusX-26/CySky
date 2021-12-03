@@ -71,11 +71,12 @@ class Weight(commands.Cog):
         uuid = converter.get_uuid()
 
         # try:
+        
         async with ClientSession() as session:
             if profile == None:
-                profile_data = await asyncGetInfo(f'https://hypixel-api.senither.com/v1/profiles/{uuid}/weight?key={API_KEY}', session)
+                profile_data = await asyncGetInfo(f'https://hypixel-skyblock-facade.cygnusx.repl.co/v1/profiles/{uuid}/weight?key={API_KEY}', session)
             else:
-                profile_data = await asyncGetInfo(f'https://hypixel-api.senither.com/v1/profiles/{uuid}/{profile}?key={API_KEY}', session)
+                profile_data = await asyncGetInfo(f'https://hypixel-skyblock-facade.cygnusx.repl.co/v1/profiles/{uuid}/{profile}?key={API_KEY}', session)
 
         status = profile_data['status']
 

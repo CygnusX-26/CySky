@@ -67,7 +67,7 @@ class Profiles(commands.Cog):
 
         try:
             async with ClientSession() as session:
-                profile_data = await asyncGetInfo(f'https://hypixel-api.senither.com/v1/profiles/{uuid}?key={API_KEY}', session)
+                profile_data = await asyncGetInfo(f'https://hypixel-skyblock-facade.cygnusx.repl.co/v1/profiles/{uuid}?key={API_KEY}', session)
 
             status = profile_data['status']
 
