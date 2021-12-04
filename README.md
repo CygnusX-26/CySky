@@ -12,7 +12,8 @@ My Prefix is s/
 1. Clone this repository
 2. Install the required dependencies
 3. Create environment variables called "API_KEY", "DISCORD_BOT_TOKEN", and "DISCORD_BOT_PREFIX". Set them to your hypixel api key discord api key and bot prefix respectively.
-4. Run the bot
+4. Go to [The Senither Api](https://github.com/Senither/hypixel-skyblock-facade) and fork the repository, and follow the instructions in the README to host your own instance of the api on repl.it. Replace the link in Weight.py and Profiles.py with your own instance link.
+5. Run the bot
 
 ## Default Commands
 `help` ▹ displays a list of commands.
