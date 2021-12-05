@@ -92,9 +92,13 @@ class Verify(commands.Cog):
         if len(check) == 0:
             insertUser(user, username)
             embed = discord.Embed(
-                title='Success!',
-                colour=discord.Color.default()
+            title='Success!',
+            colour=discord.Color.default()
             )
+            embed.add_field(
+            name='`Verified!`', value=f"""{ctx.message.author.mention} has been successfully linked to {username}""", inline=True)
+            embed.set_footer(
+            text=f'Verified: {today}', icon_url='https://static.wikia.nocookie.net/minecraft_gamepedia/images/2/20/Powered_Redstone_Repeater_Delay_3_%28S%29_BE2.png/revision/latest?cb=20210329195117')
             await message.edit(embed=embed)
             return
         for i in range(len(check)):
