@@ -1,7 +1,7 @@
 # CySky
 
 A WIP Hypixel Skyblock Statistics bot coded in python and powered by Hypixel, Senither, Slothpixel APIs.
-Invite the bot here: https://discord.com/api/oauth2/auth...3693680640&permissions=277025508352&scope=bot
+Invite the bot here: https://discord.com/api/oauth2/authorize?client_id=277588583693680640&permissions=414464724032&scope=bot
 
 ## Database
 **accounts.db** is used to store verification information linking the users discord ID to their minecraft username.
