@@ -199,7 +199,7 @@ class Weight(commands.Cog):
             """, inline=False)
 
         if dungeons:
-            embed.add_field(name=f'Dungeons: {round(catacombs["weight"] + classes["weight"])} (+ {round(catacombs["weight_overflow"] + classes["weight_overflow"])} Overflow)', value=f"""
+            embed.add_field(name=f'Dungeons: {round(classes["weight"], 2)} (+ {round(catacombs["weight_overflow"] + classes["weight_overflow"])} Overflow)', value=f"""
             <:catacombs:912115179062452256> `Catacombs` {round(catacombs["level"], 2)} ▹ Weight: {round(catacombs["weight"], 2)} ▹ Overflow: {round(catacombs["weight_overflow"], 2)}
             <:healer:912115179385413642> `Healer` {round(dungeons_classes['healer']['level'], 2)} ▹ Weight: {round(dungeons_classes['healer']['weight'], 2)} ▹ Overflow: {round(dungeons_classes['healer']['weight_overflow'], 2)}
             <:mage:912115179347640360> `Mage` {round(dungeons_classes['mage']['level'], 2)} ▹ Weight: {round(dungeons_classes['mage']['weight'], 2)} ▹ Overflow: {round(dungeons_classes['mage']['weight_overflow'], 2)}

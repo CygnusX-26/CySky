@@ -37,7 +37,7 @@ class Profiles(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=['p'])
-    async def profiles(self, ctx, player=None):
+    async def profile(self, ctx, player=None):
         if (player == None):
             c.execute(f"SELECT * FROM accounts")
             check = c.fetchall()
