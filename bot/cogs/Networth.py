@@ -7,6 +7,10 @@ import sqlite3
 from pprint import pprint
 from aiohttp import ClientSession
 from username_to_uuid import UsernameToUUID
+from datetime import date
+
+today = date.today()
+
 
 conn = sqlite3.connect('accounts.db')
 
@@ -101,7 +105,67 @@ class Networth(commands.Cog):
 
         embed = discord.Embed(
             title=f"{player}'s total networth ",
-            description=f'> **{round(networth + purse + sacks, 2):,}**',
+            description=f'> **{round(networth + purse + sacks):,}**',
             colour=discord.Colour.dark_gray() 
         )
+
+        embed.set_footer(text=f"Profile: {data['profiles'][fcount]['cute_name']} {today}")
+        embed.set_thumbnail(url=f'https://mc-heads.net/head/{player}')
+        try:
+            embed.add_field(name = "Purse Value", value = f"`{round(purse):,}`", inline = False)
+            embed.add_field(name = f"Storage Value ▹ {round(categories['data']['categories']['storage']['total']):,}", value=f"""
+            > Highest value item
+            {categories['data']['categories']['storage']['top_items'][0]['name']} ▹ `{categories['data']['categories']['storage']['top_items'][0]['price']:,}`
+            """, inline = False)
+        except:
+            pass
+        
+        try:
+            embed.add_field(name = f"Enderchest Value ▹ {round(categories['data']['categories']['enderchest']['total']):,}", value=f"""
+            > Highest value item
+            {categories['data']['categories']['enderchest']['top_items'][0]['name']} ▹ `{categories['data']['categories']['enderchest']['top_items'][0]['price']:,}`
+            """, inline = False)
+        except:
+            pass
+
+        try:
+            embed.add_field(name = f"Inventory Value ▹ {round(categories['data']['categories']['inventory']['total']):,}", value=f"""
+            > Highest value item
+            {categories['data']['categories']['inventory']['top_items'][0]['name']} ▹ `{categories['data']['categories']['inventory']['top_items'][0]['price']:,}`
+            """, inline = False)
+        except:
+            pass
+        
+        try:
+            embed.add_field(name = f"Armor Value ▹ {round(categories['data']['categories']['armor']['total']):,}", value=f"""
+            > Highest value item
+            {categories['data']['categories']['armor']['top_items'][0]['name']} ▹ `{categories['data']['categories']['armor']['top_items'][0]['price']:,}`
+            """, inline = False)
+        except:
+            pass
+        
+        try:
+            embed.add_field(name = f"Wardrobe Value ▹ {round(categories['data']['categories']['wardrobe_inventory']['total']):,}", value=f"""
+            > Highest value item
+            {categories['data']['categories']['wardrobe_inventory']['top_items'][0]['name']} ▹ `{categories['data']['categories']['wardrobe_inventory']['top_items'][0]['price']:,}`
+            """, inline = False)
+        except:
+            pass
+
+        try:
+            embed.add_field(name = f"Pets Value ▹ {round(categories['data']['categories']['pets']['total']):,}", value=f"""
+            > Highest value item
+            {categories['data']['categories']['pets']['top_items'][0]['name']} ▹ `{categories['data']['categories']['pets']['top_items'][0]['price']:,}`
+            """, inline = False)
+        except:
+            pass
+
+        try:
+            embed.add_field(name = f"Talismans Value ▹ {round(categories['data']['categories']['talismans']['total']):,}", value=f"""
+            > Highest value item
+            {categories['data']['categories']['talismans']['top_items'][0]['name']} ▹ `{categories['data']['categories']['talismans']['top_items'][0]['price']:,}`
+            """, inline = False)
+        except:
+            pass
+
         await message.edit(embed=embed)
