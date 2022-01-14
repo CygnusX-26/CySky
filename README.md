@@ -22,11 +22,13 @@ Set my prefix as an env called "DISCORD_BOT_PREFIX"
 `bz` ▹ displays bazaar info for a specified item.
 `bztop` ▹ displays bazaar info for a specified item.
 `latest` ▹ displays the latest skyblock update information.
+`networth` ▹ displays the specified user's current networth.
 `profile` ▹ displays the user's Skyblock profiles and their IDs.
 `weight` ▹ displays current Senither player weight.
 
 ## Useful links and Credits
  - [Hypixel API](https://api.hypixel.net/)
+ - [Maro API](https://maro.skybrokers.xyz/)
  - [Slothpixel API](https://docs.slothpixel.me/)
  - [Senither API](https://hypixel-api.senither.com/)
  - [Skycrypt API](https://sky.shiiyu.moe/api)
