@@ -9,6 +9,7 @@ from cogs.Auction import Auction
 from cogs.Bazaar import Bazaar
 from cogs.Bot import bot
 from cogs.LastestUpdate import LatestUpdate
+from cogs.Networth import Networth
 import sqlite3
 
 conn = sqlite3.connect('accounts.db')
@@ -39,5 +40,6 @@ client.add_cog(LatestUpdate(client))
 client.add_cog(Weight(client))
 client.add_cog(Profiles(client))
 client.add_cog(Verify(client))
+client.add_cog(Networth(client))
 
 client.run(os.getenv("DISCORD_BOT_TOKEN"))
