@@ -11,8 +11,11 @@ from cogs.Bot import bot
 from cogs.LastestUpdate import LatestUpdate
 from cogs.Networth import Networth
 import sqlite3
+from os.path import join, dirname, abspath
 
-conn = sqlite3.connect('./data/accounts.db')
+db_path = join(dirname(dirname(abspath(__file__))), 'bot/data/accounts.db')
+
+conn = sqlite3.connect(db_path)
 
 c = conn.cursor()
 
