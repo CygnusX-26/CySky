@@ -12,7 +12,7 @@ from datetime import date
 today = date.today()
 
 
-conn = sqlite3.connect('accounts.db')
+conn = sqlite3.connect('bot/data/accounts.db')
 
 c = conn.cursor()
 

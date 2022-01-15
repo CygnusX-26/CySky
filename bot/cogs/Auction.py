@@ -7,7 +7,7 @@ import os
 from aiohttp import ClientSession
 import sqlite3
 
-conn = sqlite3.connect('accounts.db')
+conn = sqlite3.connect('bot/data/accounts.db')
 
 c = conn.cursor()
 
