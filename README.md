@@ -4,7 +4,7 @@ A WIP Hypixel Skyblock Statistics bot coded in python and powered by Hypixel, Se
 Invite the bot here: https://discord.com/api/oauth2/authorize?client_id=277588583693680640&permissions=414464724032&scope=bot
 
 ## Database
-**accounts.db** is used to store verification information linking the users discord ID to their minecraft username.
+**data/bots/accounts.db** is used to store verification information linking the users discord ID to their minecraft username.
 
 ## Prefix
 Set my prefix as an env called "DISCORD_BOT_PREFIX"
