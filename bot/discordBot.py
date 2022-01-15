@@ -12,7 +12,7 @@ from cogs.LastestUpdate import LatestUpdate
 from cogs.Networth import Networth
 import sqlite3
 
-conn = sqlite3.connect('accounts.db')
+conn = sqlite3.connect('./data/accounts.db')
 
 c = conn.cursor()
 
