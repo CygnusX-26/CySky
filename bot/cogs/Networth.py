@@ -92,7 +92,7 @@ class Networth(commands.Cog):
                 return
 
             profile = data['profiles'][fcount]['members'][uuid]
-            categories = await asyncPostInfo("https://skyblock.acebot.xyz/api/networth/categories", {"data": profile}, session)
+            categories = await asyncPostInfo("https://maro.skybrokers.xyz/api/networth/categories", {"data": profile}, session)
         if categories['status'] == 404:
             embed = discord.Embed()
             embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
@@ -102,10 +102,11 @@ class Networth(commands.Cog):
         networth = categories['data']['networth']
         purse = categories['data']['purse']
         sacks = categories['data']['sacks']
+        bank = round(float(("%.17f" % data['profiles'][fcount]['banking']['balance']).rstrip('0').rstrip('.')))
 
         embed = discord.Embed(
             title=f"{player}'s total networth ",
-            description=f'> **{round(networth + purse + sacks):,}**',
+            description=f'> **{round(networth + purse + sacks + bank):,}**',
             colour=discord.Colour.dark_gray() 
         )
 
@@ -113,6 +114,7 @@ class Networth(commands.Cog):
         embed.set_thumbnail(url=f'https://mc-heads.net/head/{player}')
         try:
             embed.add_field(name = "Purse Value", value = f"`{round(purse):,}`", inline = False)
+            embed.add_field(name = "Bank Value", value = f"`{round(bank):,}`", inline = True)
             embed.add_field(name = f"Storage Value ▹ {round(categories['data']['categories']['storage']['total']):,}", value=f"""
             > Highest value item
             {categories['data']['categories']['storage']['top_items'][0]['name']} ▹ `{categories['data']['categories']['storage']['top_items'][0]['price']:,}`
