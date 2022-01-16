@@ -10,6 +10,7 @@ from cogs.Bazaar import Bazaar
 from cogs.Bot import bot
 from cogs.LastestUpdate import LatestUpdate
 from cogs.Networth import Networth
+from cogs.Events import Events
 import sqlite3
 from os.path import join, dirname, abspath
 
@@ -44,5 +45,6 @@ client.add_cog(Weight(client))
 client.add_cog(Profiles(client))
 client.add_cog(Verify(client))
 client.add_cog(Networth(client))
+client.add_cog(Events(client))
 
 client.run(os.getenv("DISCORD_BOT_TOKEN"))
