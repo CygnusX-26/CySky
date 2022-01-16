@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from aiohttp import ClientSession
+import time
 from datetime import date
 
 today = date.today()
@@ -22,6 +23,7 @@ class Events(commands.Cog):
 
         embed = discord.Embed(
             title = 'Events',
+            description = f'> Your Timezone <t:{str(time.time()//1)[0:-2]}:F>',
             colour=discord.Colour.dark_gray()
         )
 
@@ -37,7 +39,7 @@ class Events(commands.Cog):
         embed.add_field(name = '**Election Booth Open is starting**', value = self.getEvent('ELECTION_BOOTH_OPENS'), inline=False)
         embed.add_field(name = '**Election over**', value = self.getEvent('ELECTION_OVER'), inline=False)
         embed.add_field(name = "**Next Jacob's Contest is starting**", value = '<t:' + str(self.getLatestJacob()) + ':R>', inline=False)
-        embed.set_footer(text=f'Your Timezone ▹ {today}')
+        embed.set_footer(text=f'Today ▹ <t:{str(time.time()//1)[0:-2]}:d>')
         await ctx.send(embed=embed)
     
     def getEvent(self, event):
