@@ -35,5 +35,6 @@ class bot(commands.Cog):
         `profile` ▹ displays the user's Skyblock profiles and their IDs.
         `weight` ▹ displays current Senither player weight.
         Invite the bot to your server [here](https://discord.com/api/oauth2/authorize?client_id=277588583693680640&permissions=277025508352&scope=bot)
+        [This bot is open source!](https://github.com/CygnusX-26/CySky)
         ''', inline=False)
         await ctx.send(embed=embed)
