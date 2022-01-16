@@ -31,7 +31,7 @@ class Events(commands.Cog):
             self.timer = await asyncGetInfo('https://api.slothpixel.me/api/skyblock/calendar?years=1', session)
 
         embed.set_thumbnail(url='https://images.emojiterra.com/twitter/512px/1f5d3.png')
-        embed.add_field(name = '**Next Bank Interest**', value = self.getEventR('BANK_INTEREST'), inline=False)
+        embed.add_field(name = '**Next Bank Interest**', value = f'<t:{self.getLatestBank()}:R>', inline=False)
         embed.add_field(name = '**The Spooky Festival is starting**', value = self.getEvent('SPOOKY_FESTIVAL'), inline=False)
         embed.add_field(name = "**Jerry's Workshop is starting**", value = self.getEvent('JERRYS_WORKSHOP'), inline=False)
         embed.add_field(name = '**The New Year Celebration is starting**', value = self.getEvent('NEW_YEAR_CELEBRATION'), inline=False)
@@ -43,14 +43,25 @@ class Events(commands.Cog):
         await ctx.send(embed=embed)
     
     def getEvent(self, event):
-        return '<t:' + str((self.timer['events'][event]['events'][-1]['start_timestamp'])//1000) + ':F>'
+        return '<t:' + str((self.timer['events'][event]['events'][0]['start_timestamp'])//1000) + ':F>'
 
     def getEventR(self, event):
         return '<t:' + str((self.timer['events'][event]['events'][-1]['start_timestamp'])//1000) + ':R>'
 
     def getLatestJacob(self):
         oldMin = self.timer['events']['JACOBS_CONTEST']['events'][0]['starting_in']
+        oldTime = self.timer['events']['JACOBS_CONTEST']['events'][0]['start_timestamp']
         for i in self.timer['events']['JACOBS_CONTEST']['events']:
+            if i['starting_in'] < oldMin:
+                oldMin = i['starting_in']
+                oldTime = i['start_timestamp']
+        
+        return oldTime//1000
+    
+    def getLatestBank(self):
+        oldMin = self.timer['events']['BANK_INTEREST']['events'][0]['starting_in']
+        oldTime = self.timer['events']['BANK_INTEREST']['events'][0]['start_timestamp']
+        for i in self.timer['events']['BANK_INTEREST']['events']:
             if i['starting_in'] < oldMin:
                 oldMin = i['starting_in']
                 oldTime = i['start_timestamp']
