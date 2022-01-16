@@ -21,6 +21,7 @@ Set my prefix as an env called "DISCORD_BOT_PREFIX"
 `ah` ▹ displays auction info for a specified player.
 `bz` ▹ displays bazaar info for a specified item.
 `bztop` ▹ displays bazaar info for a specified item.
+`events`▹ displays upcoming events for the next skyblock year. 
 `latest` ▹ displays the latest skyblock update information.
 `networth` ▹ displays the specified user's current networth.
 `profile` ▹ displays the user's Skyblock profiles and their IDs.
