@@ -4,7 +4,6 @@ import requests
 import json
 import os
 import sqlite3
-from pprint import pprint
 from aiohttp import ClientSession
 from username_to_uuid import UsernameToUUID
 from datetime import date
