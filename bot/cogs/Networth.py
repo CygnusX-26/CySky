@@ -101,7 +101,10 @@ class Networth(commands.Cog):
         networth = categories['data']['networth']
         purse = categories['data']['purse']
         sacks = categories['data']['sacks']
-        bank = round(float(("%.17f" % data['profiles'][fcount]['banking']['balance']).rstrip('0').rstrip('.')))
+        try:
+            bank = round(float(("%.17f" % data['profiles'][fcount]['banking']['balance']).rstrip('0').rstrip('.')))
+        except KeyError:
+            bank = 0
 
         embed = discord.Embed(
             title=f"{player}'s total networth ",
@@ -118,7 +121,7 @@ class Networth(commands.Cog):
             > Highest value item
             {categories['data']['categories']['storage']['top_items'][0]['name']} ▹ `{categories['data']['categories']['storage']['top_items'][0]['price']:,}`
             """, inline = False)
-        except:
+        except KeyError:
             pass
         
         try:
@@ -126,7 +129,7 @@ class Networth(commands.Cog):
             > Highest value item
             {categories['data']['categories']['enderchest']['top_items'][0]['name']} ▹ `{categories['data']['categories']['enderchest']['top_items'][0]['price']:,}`
             """, inline = False)
-        except:
+        except KeyError:
             pass
 
         try:
@@ -134,7 +137,7 @@ class Networth(commands.Cog):
             > Highest value item
             {categories['data']['categories']['inventory']['top_items'][0]['name']} ▹ `{categories['data']['categories']['inventory']['top_items'][0]['price']:,}`
             """, inline = False)
-        except:
+        except KeyError:
             pass
         
         try:
@@ -142,7 +145,7 @@ class Networth(commands.Cog):
             > Highest value item
             {categories['data']['categories']['armor']['top_items'][0]['name']} ▹ `{categories['data']['categories']['armor']['top_items'][0]['price']:,}`
             """, inline = False)
-        except:
+        except KeyError:
             pass
         
         try:
@@ -150,7 +153,7 @@ class Networth(commands.Cog):
             > Highest value item
             {categories['data']['categories']['wardrobe_inventory']['top_items'][0]['name']} ▹ `{categories['data']['categories']['wardrobe_inventory']['top_items'][0]['price']:,}`
             """, inline = False)
-        except:
+        except KeyError:
             pass
 
         try:
@@ -158,7 +161,7 @@ class Networth(commands.Cog):
             > Highest value item
             {categories['data']['categories']['pets']['top_items'][0]['name']} ▹ `{categories['data']['categories']['pets']['top_items'][0]['price']:,}`
             """, inline = False)
-        except:
+        except KeyError:
             pass
 
         try:
@@ -166,7 +169,7 @@ class Networth(commands.Cog):
             > Highest value item
             {categories['data']['categories']['talismans']['top_items'][0]['name']} ▹ `{categories['data']['categories']['talismans']['top_items'][0]['price']:,}`
             """, inline = False)
-        except:
+        except KeyError:
             pass
 
         await message.edit(embed=embed)
