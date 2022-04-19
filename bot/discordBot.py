@@ -20,7 +20,7 @@ conn = sqlite3.connect(db_path)
 
 c = conn.cursor()
 
-intents = discord.Intents(messages = True)
+intents = discord.Intents.default()
 client = commands.Bot(command_prefix= os.getenv("DISCORD_BOT_PREFIX"), intents=intents)
 client.remove_command('help')
 
