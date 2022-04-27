@@ -12,7 +12,7 @@ class bot(commands.Cog):
         print('This bot is online!')
         await self.bot.change_presence(
             status=discord.Status.online,
-            activity=discord.Game("waiting for hypixel api :("))
+            activity=discord.Game(f"waiting for hypixel api :( in {len(self.bot.guilds)} servers"))
 
     @commands.command(aliases=['h'])
     async def help(self, ctx):
