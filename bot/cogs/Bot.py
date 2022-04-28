@@ -38,3 +38,6 @@ class bot(commands.Cog):
         [This bot is open source!](https://github.com/CygnusX-26/CySky)
         ''', inline=False)
         await ctx.send(embed=embed)
+        await self.bot.change_presence(
+            status=discord.Status.online,
+            activity=discord.Game(f"waiting for hypixel api :( in {len(self.bot.guilds)} servers"))
