@@ -1,29 +1,34 @@
+import asyncio
+import aiohttp
 import discord
 import os
 from discord.ext import commands
-from cogs.Verify import Verify
-from cogs.Profiles import Profiles
-from cogs.Weight import Weight
-from cogs.BazaarTop import BazaarTop
-from cogs.Auction import Auction
-from cogs.Bazaar import Bazaar
-from cogs.Bot import bot
-from cogs.LastestUpdate import LatestUpdate
-from cogs.Networth import Networth
-from cogs.Events import Events
 import sqlite3
 from os.path import join, dirname, abspath
+from discord import app_commands
 
 db_path = join(dirname(dirname(abspath(__file__))), 'bot/data/accounts.db')
-
 conn = sqlite3.connect(db_path)
-
 c = conn.cursor()
 
-intents = discord.Intents.default()
-client = commands.Bot(command_prefix= os.getenv("DISCORD_BOT_PREFIX"), intents=intents)
-client.remove_command('help')
+class SkyBlockBot(commands.Bot):
+    def __init__(self):
+        super().__init__(
+            command_prefix=commands.when_mentioned_or(os.getenv("DISCORD_BOT_PREFIX")),
+            description='SkyBlock Bot',
+            intents=discord.Intents.default(),
+            application_id = 842832878554316837)
+    
+    async def load_extensions(self):
+        for filename in os.listdir("bot/cogs"):
+            if filename.endswith(".py"):
+                await self.load_extension(f"cogs.{filename[:-3]}")
 
+    async def setup_hook(self):
+        self.remove_command('help')
+        await self.load_extensions()
+        await bot.tree.sync()
+        
 
 # creates a new user table if one doesn't currently exist
 try:
@@ -35,16 +40,5 @@ try:
 except:
     pass
 
-
-client.add_cog(bot(client))
-client.add_cog(Bazaar(client))
-client.add_cog(BazaarTop(client))
-client.add_cog(Auction(client))
-client.add_cog(LatestUpdate(client))
-client.add_cog(Weight(client))
-client.add_cog(Profiles(client))
-client.add_cog(Verify(client))
-client.add_cog(Networth(client))
-client.add_cog(Events(client))
-
-client.run(os.getenv("DISCORD_BOT_TOKEN"))
+bot = SkyBlockBot()
+bot.run(os.getenv("DISCORD_BOT_TOKEN"))

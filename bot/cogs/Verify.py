@@ -1,13 +1,11 @@
 import discord
-from discord import player
-from discord.colour import Color
 from discord.ext import commands
 import requests
-import json
 from aiohttp import ClientSession
 import os
 from username_to_uuid import UsernameToUUID
 import sqlite3
+from discord import app_commands
 
 from datetime import date
 
@@ -54,41 +52,38 @@ class Verify(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command()
-    async def verify(self, ctx, username=None):
+    @app_commands.command(name='verify', description='Links your minecraft account to your discord account')
+    @app_commands.describe(username = "The minecraft account you want to link to your discord account")
+    async def verify(self, interaction: discord.Interaction, username:str=None):
         if username == None:
             embed = discord.Embed()
             embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
             embed.add_field(name='Error `couldnt resolve username`', value=f"""Uh oh! The player you were searching for couldn't be found... 
             Check your spelling! For further information and a list of players, you can click [here](https://namemc.com/).""", inline=True)
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
             return
-
+        await interaction.response.defer()
         try:
-            embed2 = discord.Embed(
-                title='Verifying...',
-                colour=discord.Color.default()
-            )
-            message = await ctx.send(embed=embed2)
 
             converter = UsernameToUUID(f'{username}')
             uuid = converter.get_uuid()
             async with ClientSession() as session:
                 profile_data = await asyncGetInfo(f'https://api.hypixel.net/player?key={API_KEY}&uuid={uuid}', session)
             social = profile_data['player']['socialMedia']['links']['DISCORD']
-            if (not(social == (ctx.message.author.name + "#" + ctx.message.author.discriminator))):
+            print(social)
+            if (not(social == (interaction.user.name + "#" + interaction.user.discriminator))):
                 raise ValueError('A very specific bad thing happened.')
         except:
             embed = discord.Embed()
             embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
             embed.add_field(name='Error `Unlinked accounts`', value=f"""Uh oh! The player you were searching for couldn't be found or doesn't have their hypixel account linked to your discord account! 
             Give the API a while to update after linking.""", inline=True)
-            await message.edit(embed=embed)
+            await interaction.followup.send(embed=embed)
             return
 
         c.execute(f"SELECT * FROM accounts")
         check = c.fetchall()
-        user = ctx.message.author.id
+        user = interaction.user.id
         if len(check) == 0:
             insertUser(user, username)
             embed = discord.Embed(
@@ -96,10 +91,10 @@ class Verify(commands.Cog):
             colour=discord.Color.default()
             )
             embed.add_field(
-            name='`Verified!`', value=f"""{ctx.message.author.mention} has been successfully linked to {username}""", inline=True)
+            name='`Verified!`', value=f"""{interaction.user.mention} has been successfully linked to {username}""", inline=True)
             embed.set_footer(
             text=f'Verified: {today}', icon_url='https://static.wikia.nocookie.net/minecraft_gamepedia/images/2/20/Powered_Redstone_Repeater_Delay_3_%28S%29_BE2.png/revision/latest?cb=20210329195117')
-            await message.edit(embed=embed)
+            await interaction.followup.send(embed=embed)
             return
         for i in range(len(check)):
             if user in check[i]:
@@ -107,7 +102,7 @@ class Verify(commands.Cog):
                 embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
                 embed.add_field(name='Error `Already Verified`', value=f"""Uh oh! Looks like the discord account you are using has already been verified. 
                 Check your spelling or unverify yourself with &unverify""", inline=True)
-                await message.edit(embed=embed)
+                await interaction.followup.send(embed=embed)
                 return
         insertUser(user, username)
         embed = discord.Embed(
@@ -115,24 +110,26 @@ class Verify(commands.Cog):
             colour=discord.Color.default()
         )
         embed.add_field(
-            name='`Verified!`', value=f"""{ctx.message.author.mention} has been successfully linked to {username}""", inline=True)
+            name='`Verified!`', value=f"""{interaction.user.mention} has been successfully linked to {username}""", inline=True)
         embed.set_footer(
             text=f'Verified: {today}', icon_url='https://static.wikia.nocookie.net/minecraft_gamepedia/images/2/20/Powered_Redstone_Repeater_Delay_3_%28S%29_BE2.png/revision/latest?cb=20210329195117')
-        await message.edit(embed=embed)
+        await interaction.followup.send(embed=embed)
 
-    @commands.command()
-    async def unverify(self, ctx, username=None):
+    @app_commands.command(name='unverify', description='Unlinks your minecraft account from your discord account')
+    @app_commands.describe(username = "The minecraft account you want to unlink from your discord account")
+    async def unverify(self, interaction: discord.Interaction, username:str=None):
         c.execute(f"SELECT * FROM accounts")
         check = c.fetchall()
-        user = ctx.message.author.id
+        user = interaction.user.id
+        await interaction.response.defer()
         if username == None:
             for i in range(len(check)):
                 if user in check[i]:
                     embed = discord.Embed()
                     embed.add_field(name='Success! `Unverified!`',
-                                    value=f"""Successfully unverified {ctx.message.author.mention}""", inline=True)
+                                    value=f"""Successfully unverified {interaction.user.mention}""", inline=True)
                     removeUser(user)
-                    await ctx.send(embed=embed)
+                    await interaction.followup.send(embed=embed)
                     return
         if len(check) == 0:
             return
@@ -142,10 +139,13 @@ class Verify(commands.Cog):
                 embed.add_field(name='Success! `Unverified!`',
                                 value=f"""Successfully unverified {username}""", inline=True)
                 removeUser(user)
-                await ctx.send(embed=embed)
+                await interaction.followup.send(embed=embed)
                 return
         embed = discord.Embed()
         embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
         embed.add_field(name='Error `Unlinked`',
                         value=f"""Your discord account isn't linked with this Minecraft account!""", inline=True)
-        await ctx.send(embed=embed)
+        await interaction.followup.send(embed=embed)
+
+async def setup(bot: commands.Bot):
+    await bot.add_cog(Verify(bot))

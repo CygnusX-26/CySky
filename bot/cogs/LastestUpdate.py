@@ -5,6 +5,7 @@ import json
 from aiohttp import ClientSession
 from username_to_uuid import UsernameToUUID
 import os
+from discord import app_commands
 
 API_KEY = os.getenv("API_KEY")
 
@@ -25,8 +26,8 @@ class LatestUpdate(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(aliases=['latest'])
-    async def latestupdate(self, ctx):
+    @app_commands.command(name='latest', description='Shows the latest skyblock update')
+    async def latestupdate(self, interaction: discord.Interaction) -> None:
         async with ClientSession() as session:
             update_data = await asyncGetInfo(f'https://api.hypixel.net/skyblock/news?key={API_KEY}', session)
         embed = discord.Embed(
@@ -39,4 +40,7 @@ class LatestUpdate(commands.Cog):
         embed.add_field(
             name='\u200b', value=f'Link to the forum post [here]({link}).', inline=False)
 
-        await ctx.send(embed=embed)
+        await interaction.response.send_message(embed=embed)
+
+async def setup(bot: commands.Bot):
+    await bot.add_cog(LatestUpdate(bot))

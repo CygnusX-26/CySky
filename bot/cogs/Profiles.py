@@ -6,6 +6,7 @@ import os
 from aiohttp import ClientSession
 from username_to_uuid import UsernameToUUID
 import sqlite3
+from discord import app_commands
 
 conn = sqlite3.connect('bot/data/accounts.db')
 
@@ -36,12 +37,13 @@ class Profiles(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(aliases=['p'])
-    async def profile(self, ctx, player=None):
+    @app_commands.command(name='profile', description='View a list of profiles for a player')
+    @app_commands.describe(player = "The player to check profiles for, can be none if verified")
+    async def profile(self, interaction: discord.Interaction, player:str=None) -> None:
         if (player == None):
             c.execute(f"SELECT * FROM accounts")
             check = c.fetchall()
-            user = ctx.message.author.id
+            user = interaction.user.id
             if len(check) == 0:
                 return
             for i in range(len(check)):
@@ -52,18 +54,12 @@ class Profiles(commands.Cog):
                 embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
                 embed.add_field(name='Error `Unverified`', value=f"""Uh oh! Looks like the discord account you are using has not been verified. 
                 Link your minecraft account with &verify [accountname]""", inline=True)
-                await ctx.send(embed=embed)
+                await interaction.response.send_message(embed=embed)
                 return
 
         converter = UsernameToUUID(f'{player}')
         uuid = converter.get_uuid()
-
-        embed2 = discord.Embed(
-            title=f'Profiles for {player}',
-            description='Loading...',
-            colour=discord.Colour.dark_gray()
-        )
-        message = await ctx.send(embed=embed2)
+        await interaction.response.defer()
 
         try:
             async with ClientSession() as session:
@@ -79,47 +75,47 @@ class Profiles(commands.Cog):
                 embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
                 embed.add_field(
                     name='Error', value=f"""The request is missing an authentication method, you must either provide a valid **key query paramater**, or an **Authentication header**.""", inline=True)
-                await message.edit(embed=embed)
+                await interaction.followup.send(embed=embed)
                 return
             elif status == 403:
                 embed = discord.Embed()
                 embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
                 embed.add_field(
                     name='Error', value=f"""The provided Hypixel API token is invalid, or does not exists.""", inline=True)
-                await message.edit(embed=embed)
+                await interaction.followup.send(embed=embed)
                 return
             elif status == 404:
                 embed = discord.Embed()
                 embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
                 embed.add_field(
                     name='Error', value=f"""There is either no player with the given UUID, or the player has no SkyBlock profiles.""", inline=True)
-                await message.edit(embed=embed)
+                await interaction.followup.send(embed=embed)
                 return
             elif status == 429:
                 embed = discord.Embed()
                 embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
                 embed.add_field(name='Error', value=f"""The Hypixel API rate-limited was reached, if you see this in your resposnes you should slow down requests, or start caching response to prevent having to make as many requests in the future.""", inline=True)
-                await message.edit(embed=embed)
+                await interaction.followup.send(embed=embed)
                 return
             elif status == 500:
                 embed = discord.Embed()
                 embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
                 embed.add_field(
                     name='Error', value=f"""An internal error occurred in the API, or the Hypixel API responded with an unknown error code.""", inline=True)
-                await message.edit(embed=embed)
+                await interaction.followup.send(embed=embed)
                 return
             elif status == 502:
                 embed = discord.Embed()
                 embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
                 embed.add_field(name='Error', value=f"""Hypixels API is experiencing some technical issues and may not be available, if you get this error code just re-send your request at a later time, hopefully Hypixels API will work again by then.""", inline=True)
-                await message.edit(embed=embed)
+                await interaction.followup.send(embed=embed)
                 return
             elif status == 503:
                 embed = discord.Embed()
                 embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
                 embed.add_field(
                     name='Error', value=f"""Hypixels API is in maintenance mode, you can't really do much about this, just try re-send your request when the API is back online.""", inline=True)
-                await message.edit(embed=embed)
+                await interaction.followup.send(embed=embed)
                 return
 
             data = profile_data['data']
@@ -137,11 +133,13 @@ class Profiles(commands.Cog):
                 `Weight`
                 {round(data[i]['weight'] + data[i]['weight_overflow'], 2):,}
                 """)
-            await message.edit(embed=embed)
+            await interaction.followup.send(embed=embed)
 
         except:
             embed = discord.Embed()
             embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
             embed.add_field(name='Error', value=f"""Uh oh! Looks like the player you were searching for couldn't be found... 
             Check your spelling! For further information and more detailed info, you can click [here](https://sky.shiiyu.moe/api/v2/coins/{player}).""", inline=True)
-            await message.edit(embed=embed)
+            await interaction.followup.send(embed=embed)
+async def setup(bot: commands.Bot):
+    await bot.add_cog(Profiles(bot))

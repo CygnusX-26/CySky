@@ -1,21 +1,22 @@
 import discord
 from discord.ext import commands
+from discord import app_commands
 
 
-class bot(commands.Cog):
+class Bot(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print('This bot is online!')
         await self.bot.change_presence(
             status=discord.Status.online,
-            activity=discord.Game(f"waiting for hypixel api :( in {len(self.bot.guilds)} servers"))
+            activity=discord.Game(f"Please reinvite me to enable slash commands! {len(self.bot.guilds)} servers"))
+        print('This bot is online!')
 
-    @commands.command(aliases=['h'])
-    async def help(self, ctx):
+    @app_commands.command(name= 'help', description = 'Shows the help menu')
+    async def help(self, interaction: discord.Interaction) -> None:
         embed = discord.Embed(
             title=f'Help menu',
             description='> Page - 1/1',
@@ -37,7 +38,15 @@ class bot(commands.Cog):
         Invite the bot to your server [here](https://discord.com/api/oauth2/authorize?client_id=277588583693680640&permissions=277025508352&scope=bot)
         [This bot is open source!](https://github.com/CygnusX-26/CySky)
         ''', inline=False)
-        await ctx.send(embed=embed)
+        await interaction.response.send_message(embed=embed)
         await self.bot.change_presence(
             status=discord.Status.online,
-            activity=discord.Game(f"waiting for hypixel api :( in {len(self.bot.guilds)} servers"))
+            activity=discord.Game(f"Please reinvite me to enable slash commands! {len(self.bot.guilds)} servers"))
+    
+    @commands.command()
+    async def help(self, ctx) -> None:
+        ctx.send('please reinvite the bot to enable slash commands')
+
+
+async def setup(bot: commands.Bot):
+    await bot.add_cog(Bot(bot))

@@ -6,6 +6,7 @@ from username_to_uuid import UsernameToUUID
 import os
 from aiohttp import ClientSession
 import sqlite3
+from discord import app_commands
 
 conn = sqlite3.connect('bot/data/accounts.db')
 
@@ -36,38 +37,34 @@ class Weight(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(aliases=['we'])
-    async def weight(self, ctx, playerName=None, profile=None):
+    @app_commands.command(name='weight', description='Shows the Senither weight of a player')
+    @app_commands.describe(playername="The player to check weight for, can be none if verified", profile="The profile to check weight for, can be none and will use highest weight profile.")
+    async def weight(self, interaction: discord.Interaction, playername:str=None, profile:str=None) -> None:
         dungeons = False
         slayer = False
         skill = False
 
         # Verification Check
-        if (playerName == None):
+        if (playername == None):
             c.execute(f"SELECT * FROM accounts")
             check = c.fetchall()
-            user = ctx.message.author.id
+            user = interaction.user.id
             if len(check) == 0:
                 return
             for i in range(len(check)):
                 if user in check[i]:
-                    playerName = getUser(user, check[i][1])[1]
-            if playerName == None:
+                    playername = getUser(user, check[i][1])[1]
+            if playername == None:
                 embed = discord.Embed()
                 embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
                 embed.add_field(name='Error `Unverified`', value=f"""Uh oh! Looks like the discord account you are using has not been verified. 
                 Link your minecraft account with &verify [accountname], give the API a bit before trying again""", inline=True)
-                await ctx.send(embed=embed)
+                await interaction.response.send_message(embed=embed)
                 return
+        
+        await interaction.response.defer()
 
-        embed2 = discord.Embed(
-            title=f'Weight for {playerName}',
-            description='Calculating...',
-            colour=discord.Colour.dark_gray()
-        )
-        message = await ctx.send(embed=embed2)
-
-        converter = UsernameToUUID(f'{playerName}')
+        converter = UsernameToUUID(f'{playername}')
         uuid = converter.get_uuid()
 
         # try:
@@ -88,47 +85,47 @@ class Weight(commands.Cog):
             embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
             embed.add_field(
                 name='Error', value=f"""The request is missing an authentication method, you must either provide a valid **key query paramater**, or an **Authentication header**.""", inline=True)
-            await message.edit(embed=embed)
+            await interaction.followup.send(embed=embed)
             return
         elif status == 403:
             embed = discord.Embed()
             embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
             embed.add_field(
                 name='Error', value=f"""The provided Hypixel API token is invalid, or does not exists.""", inline=True)
-            await message.edit(embed=embed)
+            await interaction.followup.send(embed=embed)
             return
         elif status == 404:
             embed = discord.Embed()
             embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
             embed.add_field(
                 name='Error', value=f"""There is either no player with the given UUID, or the player has no SkyBlock profiles.""", inline=True)
-            await message.edit(embed=embed)
+            await interaction.followup.send(embed=embed)
             return
         elif status == 429:
             embed = discord.Embed()
             embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
             embed.add_field(name='Error', value=f"""The Hypixel API rate-limited was reached, if you see this in your resposnes you should slow down requests, or start caching response to prevent having to make as many requests in the future.""", inline=True)
-            await message.edit(embed=embed)
+            await interaction.followup.send(embed=embed)
             return
         elif status == 500:
             embed = discord.Embed()
             embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
             embed.add_field(
                 name='Error', value=f"""An internal error occurred in the API, or the Hypixel API responded with an unknown error code.""", inline=True)
-            await message.edit(embed=embed)
+            await interaction.followup.send(embed=embed)
             return
         elif status == 502:
             embed = discord.Embed()
             embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
             embed.add_field(name='Error', value=f"""Hypixels API is experiencing some technical issues and may not be available, if you get this error code just re-send your request at a later time, hopefully Hypixels API will work again by then.""", inline=True)
-            await message.edit(embed=embed)
+            await interaction.followup.send(embed=embed)
             return
         elif status == 503:
             embed = discord.Embed()
             embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
             embed.add_field(
                 name='Error', value=f"""Hypixels API is in maintenance mode, you can't really do much about this, just try re-send your request when the API is back online.""", inline=True)
-            await message.edit(embed=embed)
+            await interaction.followup.send(embed=embed)
             return
 
         data = profile_data['data']
@@ -140,8 +137,8 @@ class Weight(commands.Cog):
             embed = discord.Embed()
             embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
             embed.add_field(name='Error `API DISABLED`', value=f"""Uh oh! Looks like the player or profile you were searching for doesn't have their API turned on... 
-            For further information, you can click [here](https://sky.shiiyu.moe/api/v2/profile/{playerName}).""", inline=True)
-            await message.edit(embed=embed)
+            For further information, you can click [here](https://sky.shiiyu.moe/api/v2/profile/{playername}).""", inline=True)
+            await interaction.followup.send(embed=embed)
             return
         slayers = data['slayers']
         if not(slayers == None):
@@ -153,13 +150,13 @@ class Weight(commands.Cog):
             dungeons = True
 
         embed = discord.Embed(
-            title=f'Weight for {playerName} on {profile_name}',
-            description=f"""> Total weight for **{playerName}** on **{profile_name}** is **{round(data['weight'], 2)}** (**+ {round(data['weight_overflow'], 2)}** Overflow)
+            title=f'Weight for {playername} on {profile_name}',
+            description=f"""> Total weight for **{playername}** on **{profile_name}** is **{round(data['weight'], 2)}** (**+ {round(data['weight_overflow'], 2)}** Overflow)
             > Total Weight With Overflow: **{round(data['weight'] + data['weight_overflow'], 2)}**""",
             colour=discord.Colour.dark_grey()
         )
         embed.set_footer(text=f'{profile_name}')
-        embed.set_thumbnail(url=f'https://mc-heads.net/head/{playerName}')
+        embed.set_thumbnail(url=f'https://mc-heads.net/head/{playername}')
         if skill:
             embed.add_field(name=f"Skills: {round(skills['weight'], 2)} (+ {round(skills['weight_overflow'], 2)} Overflow)", value=f"""
             <:taming:912112891073822770> `Taming` {round(skills['taming']['level'], 2)} ▹ Weight: {round(skills['taming']['weight'], 2)} ▹ Overflow: {round(skills['taming']['weight_overflow'], 2)}
@@ -217,10 +214,13 @@ class Weight(commands.Cog):
             <:archer:912115179431559248> `Archer` {0} ▹ Weight: {0} ▹ Overflow: {0}
             """, inline=False)
 
-        await message.edit(embed=embed)
+        await interaction.followup.send(embed=embed)
         # except:
         #     embed = discord.Embed()
         #     embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
         #     embed.add_field(name='Error', value=f"""Uh oh! Looks like the player or profile you were searching for couldn't be found...
-        #     Check your spelling! For further information, you can click [here](https://sky.shiiyu.moe/api/v2/profile/{playerName}).""", inline=True)
-        #     await message.edit(embed=embed)
+        #     Check your spelling! For further information, you can click [here](https://sky.shiiyu.moe/api/v2/profile/{playername}).""", inline=True)
+        #     await interaction.followup.send(embed=embed)
+
+async def setup(bot: commands.Bot):
+    await bot.add_cog(Weight(bot))

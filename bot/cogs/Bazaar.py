@@ -4,6 +4,7 @@ import requests
 from aiohttp import ClientSession
 import json
 import os
+from discord import app_commands
 
 API_KEY = os.getenv("API_KEY")
 
@@ -24,8 +25,9 @@ class Bazaar(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(aliases=['bz'])
-    async def bazaarInfo(self, ctx, *, item):
+    @app_commands.command(name = 'bazaar', description = 'Checks the bazaar for a given item')
+    @app_commands.describe(item = "The item to check")
+    async def bazaarInfo(self, interaction: discord.Interaction, *, item:str) -> None:
         boolId = False
         async with ClientSession() as session:
             bazaar_data = await asyncGetInfo(f'https://api.hypixel.net/skyblock/bazaar?key={API_KEY}', session)
@@ -82,4 +84,7 @@ class Bazaar(commands.Cog):
             embed.add_field(name='Error', value=f"""Uh oh! Looks like the item ID you were searching for couldn't be found... 
             Make sure you are inputting the correct item id, spelling corectly, or that the item exists on the bazaar! For further information and a list of item ids, you can click [here](https://api.slothpixel.me/api/skyblock/items).""", inline=True)
 
-        await ctx.send(embed=embed)
+        await interaction.response.send_message(embed=embed)
+
+async def setup(bot: commands.Bot):
+    await bot.add_cog(Bazaar(bot))

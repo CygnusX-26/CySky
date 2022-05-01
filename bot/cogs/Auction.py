@@ -6,6 +6,7 @@ from username_to_uuid import UsernameToUUID
 import os
 from aiohttp import ClientSession
 import sqlite3
+from discord import InteractionMessage, app_commands
 
 conn = sqlite3.connect('bot/data/accounts.db')
 
@@ -31,18 +32,20 @@ def getUser(id, mcname):
     return c.fetchone()
 
 
+
 class Auction(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(aliases=['ah'])
-    async def auction(self, ctx, player=None):
+    @app_commands.command(name = "auction", description= "Checks auction info for a given player")
+    @app_commands.describe(player = "The player to check auction info for, can be none if verified")
+    async def auction(self, interaction: discord.Interaction, player:str=None) -> None:
         # verification check
         if (player == None):
             c.execute(f"SELECT * FROM accounts")
             check = c.fetchall()
-            user = ctx.message.author.id
+            user = interaction.user.id
             if len(check) == 0:
                 return
             for i in range(len(check)):
@@ -53,16 +56,10 @@ class Auction(commands.Cog):
                 embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
                 embed.add_field(name='Error `Unverified`', value=f"""Uh oh! Looks like the discord account you are using has not been verified. 
                 Link your minecraft account with &verify [accountname]""", inline=True)
-                await ctx.send(embed=embed)
+                await interaction.response.send_message(embed=embed)
                 return
         fields = False
-        embed2 = discord.Embed(
-            title=f'Auction Info for {player}',
-            description='Loading...',
-            colour=discord.Colour.dark_gray()
-        )
-        message = await ctx.send(embed=embed2)
-
+        await interaction.response.defer()
         try:
             converter = UsernameToUUID(player)
             uuid = converter.get_uuid()
@@ -91,8 +88,10 @@ class Auction(commands.Cog):
             embed.add_field(name='Error', value=f"""Uh oh! Looks like the player you were searching for couldn't be found... 
             Check your spelling! For further information and a list of player auctions, you can click [here](https://api.hypixel.net/skyblock/auctions_ended).""", inline=True)
         if fields:
-            await message.edit(embed=embed)
+            await interaction.followup.send(embed=embed)
         else:
-            embed.add_field(
-                name=f'No ongoing auctions for {player}', value=f"For further information you can view a list of all auctions [here](https://api.hypixel.net/skyblock/auctions_ended).", inline=True)
-            await message.edit(embed=embed)
+            embed.add_field(name=f'No ongoing auctions for {player}', value=f"For further information you can view a list of all auctions [here](https://api.hypixel.net/skyblock/auctions_ended).", inline=True)
+            await interaction.followup.send(embed=embed)
+
+async def setup(bot: commands.Bot):
+    await bot.add_cog(Auction(bot))

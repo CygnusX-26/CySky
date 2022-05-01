@@ -7,6 +7,7 @@ import sqlite3
 from aiohttp import ClientSession
 from username_to_uuid import UsernameToUUID
 from datetime import date
+from discord import app_commands
 
 today = date.today()
 
@@ -43,14 +44,15 @@ class Networth(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(aliases=['nw'])
-    async def networth(self, ctx, player=None):
+    @app_commands.command(name='networth', description='Shows the networth of a player')
+    @app_commands.describe(player = "The player to check networth for, can be none if verified")
+    async def networth(self, interaction: discord.Interaction, player:str=None):
         oldSave = -1
         count = -1
         if (player == None):
             c.execute(f"SELECT * FROM accounts")
             check = c.fetchall()
-            user = ctx.message.author.id
+            user = interaction.user.id
             if len(check) == 0:
                 return
             for i in range(len(check)):
@@ -61,15 +63,10 @@ class Networth(commands.Cog):
                 embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
                 embed.add_field(name='Error `Unverified`', value=f"""Uh oh! Looks like the discord account you are using has not been verified. 
                 Link your minecraft account with &verify [accountname]""", inline=True)
-                await ctx.send(embed=embed)
+                await interaction.response.send_message(embed=embed)
                 return
         
-        embed2 = discord.Embed(
-            title=f"{player}'s total networth",
-            description='Loading...',
-            colour=discord.Colour.dark_gray()
-        )
-        message = await ctx.send(embed=embed2)
+        await interaction.response.defer()
 
         converter = UsernameToUUID(f'{player}')
         uuid = converter.get_uuid()
@@ -87,7 +84,7 @@ class Networth(commands.Cog):
                 embed = discord.Embed()
                 embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
                 embed.add_field(name='Error `User not found!`', value="Couldn't find the requested user.", inline=True)
-                await message.edit(embed=embed)
+                await interaction.followup.send(embed=embed)
                 return
 
             profile = data['profiles'][fcount]['members'][uuid]
@@ -96,7 +93,7 @@ class Networth(commands.Cog):
             embed = discord.Embed()
             embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
             embed.add_field(name='Error `API Disabled`', value=f"{categories['cause']}", inline=True)
-            await message.edit(embed=embed)
+            await interaction.followup.send(embed=embed)
             return
         networth = categories['data']['networth']
         purse = categories['data']['purse']
@@ -172,4 +169,7 @@ class Networth(commands.Cog):
         except KeyError:
             pass
 
-        await message.edit(embed=embed)
+        await interaction.followup.send(embed=embed)
+
+async def setup(bot: commands.Bot):
+    await bot.add_cog(Networth(bot))

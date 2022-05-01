@@ -3,6 +3,8 @@ from discord.ext import commands
 import requests
 import json
 from aiohttp import ClientSession
+from discord import app_commands
+from discord.app_commands import Choice
 import os
 
 API_KEY = os.getenv("API_KEY")
@@ -24,22 +26,11 @@ class BazaarTop(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(aliases=['bztop'])
-    async def bazaartop(self, ctx, type='none'):
-        type = type.lower()
-        if (type == 'none'):
-            embed = discord.Embed()
-            embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
-            embed.add_field(name='Error', value=f"""
-            Please specify a valid value for bazaar top!
-            `margin`
-            `percent`
-            `demand`
-            `smart`
-            """, inline=True)
-            await ctx.send(embed=embed)
-        elif (type == 'margin' or type == 'm'):
-
+    @app_commands.command(name = 'bztop', description = 'Finds best flips on the bazaar')
+    @app_commands.describe(type = "The type of flip to look for")
+    @app_commands.choices(type = [Choice(name='margin', value='margin'), Choice(name='percent', value='percent'), Choice(name='demand', value='demand'), Choice(name='smart', value='smart')])
+    async def bazaartop(self, interaction: discord.Interaction, type:str) -> None:
+        if (type == 'margin' or type == 'm'):
             old = 0
             value = 0
             async with ClientSession() as session:
@@ -79,7 +70,7 @@ class BazaarTop(commands.Cog):
             """, inline=True)
             embed.set_footer(
                 text='⚠️Please note that some markets may be extremely volatile⚠️')
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
         elif (type == 'percent' or type == 'p' or type == '%'):
             old = 0
             value = 0
@@ -120,7 +111,7 @@ class BazaarTop(commands.Cog):
             """, inline=True)
             embed.set_footer(
                 text='⚠️Please note that some markets may be extremely volatile⚠️')
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
         elif (type == 'demand' or type == 'd'):
             old = 0
             value = 0
@@ -163,7 +154,7 @@ class BazaarTop(commands.Cog):
             """, inline=True)
             embed.set_footer(
                 text='⚠️Please note that some markets may be extremely volatile⚠️')
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
         elif (type == 'smart' or type == 's'):
             old = 0
             value = 0
@@ -220,7 +211,7 @@ class BazaarTop(commands.Cog):
             """, inline=True)
             embed.set_footer(
                 text='⚠️Please note that some markets may be extremely volatile⚠️')
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
         else:
             embed = discord.Embed()
             embed.set_thumbnail(url=f'https://sky.shiiyu.moe/item/BARRIER')
@@ -231,4 +222,7 @@ class BazaarTop(commands.Cog):
             `demand`
             `smart`
             """, inline=True)
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
+
+async def setup(bot: commands.Bot):
+    await bot.add_cog(BazaarTop(bot))

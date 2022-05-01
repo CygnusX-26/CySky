@@ -3,6 +3,7 @@ from discord.ext import commands
 from aiohttp import ClientSession
 import time
 from datetime import date
+from discord import app_commands
 
 today = date.today()
 
@@ -18,8 +19,8 @@ class Events(commands.Cog):
         self.bot = bot
         self.timer = None
 
-    @commands.command()
-    async def events(self, ctx):
+    @app_commands.command(name= 'events', description = 'Shows upcoming global skyblock events')
+    async def events(self, interaction: discord.Interaction) -> None:
 
         embed = discord.Embed(
             title = 'Events',
@@ -40,7 +41,7 @@ class Events(commands.Cog):
         embed.add_field(name = '**Election over**', value = self.getEvent('ELECTION_OVER'), inline=False)
         embed.add_field(name = "**Next Jacob's Contest is starting**", value = '<t:' + str(self.getLatestJacob()) + ':R>', inline=False)
         embed.set_footer(text=f'Today ▹ <t:{str(time.time()//1)[0:-2]}:d>')
-        await ctx.send(embed=embed)
+        await interaction.response.send_message(embed=embed)
     
     def getEvent(self, event):
         return '<t:' + str((self.timer['events'][event]['events'][0]['start_timestamp'])//1000) + ':F>'
@@ -68,3 +69,5 @@ class Events(commands.Cog):
         
         return oldTime//1000
 
+async def setup(bot: commands.Bot):
+    await bot.add_cog(Events(bot))
