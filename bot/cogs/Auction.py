@@ -6,7 +6,7 @@ from username_to_uuid import UsernameToUUID
 import os
 from aiohttp import ClientSession
 import sqlite3
-from discord import InteractionMessage, app_commands
+from discord import app_commands
 
 conn = sqlite3.connect('bot/data/accounts.db')
 

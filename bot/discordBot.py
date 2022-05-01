@@ -5,7 +5,6 @@ import os
 from discord.ext import commands
 import sqlite3
 from os.path import join, dirname, abspath
-from discord import app_commands
 
 db_path = join(dirname(dirname(abspath(__file__))), 'bot/data/accounts.db')
 conn = sqlite3.connect(db_path)
