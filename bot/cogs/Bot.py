@@ -12,7 +12,7 @@ class Bot(commands.Cog):
     async def on_ready(self):
         await self.bot.change_presence(
             status=discord.Status.online,
-            activity=discord.Game(f"Please reinvite me to enable slash commands! {len(self.bot.guilds)} servers"))
+            activity=discord.Game(f"Reinvite me to enable slash commands! {len(self.bot.guilds)} servers"))
         print('This bot is online!')
 
     @app_commands.command(name= 'help', description = 'Shows the help menu')
