@@ -17,7 +17,7 @@ class SkyBlockBot(commands.Bot):
             command_prefix=commands.when_mentioned_or(os.getenv("DISCORD_BOT_PREFIX")),
             description='SkyBlock Bot',
             intents=discord.Intents.default(),
-            application_id = 842832878554316837)
+            application_id = 277588583693680640)
     
     async def load_extensions(self):
         for filename in os.listdir("bot/cogs"):
