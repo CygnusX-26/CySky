@@ -42,10 +42,6 @@ class Bot(commands.Cog):
         await self.bot.change_presence(
             status=discord.Status.online,
             activity=discord.Game(f"Please reinvite me to enable slash commands! {len(self.bot.guilds)} servers"))
-    
-    @commands.command()
-    async def help(self, ctx) -> None:
-        ctx.send('please reinvite the bot to enable slash commands')
 
 
 async def setup(bot: commands.Bot):
