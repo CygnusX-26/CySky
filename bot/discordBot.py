@@ -24,7 +24,6 @@ class SkyBlockBot(commands.Bot):
                 await self.load_extension(f"cogs.{filename[:-3]}")
 
     async def setup_hook(self):
-        self.remove_command('help')
         await self.load_extensions()
         await bot.tree.sync()
         
