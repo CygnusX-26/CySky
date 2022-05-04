@@ -1,7 +1,7 @@
 # CySky
 
 A WIP Hypixel Skyblock Statistics bot coded in python and powered by Hypixel, Senither, Slothpixel APIs.
-Invite the bot here: https://discord.com/api/oauth2/authorize?client_id=277588583693680640&permissions=414464724032&scope=bot
+Invite the bot here: https://discord.com/api/oauth2/authorize?client_id=277588583693680640&permissions=277025508352&scope=bot%20applications.commands
 
 Please vote for the Bot Here! [Click me!](https://top.gg/bot/277588583693680640)
 
@@ -10,6 +10,7 @@ Please vote for the Bot Here! [Click me!](https://top.gg/bot/277588583693680640)
 
 ## Prefix
 Set my prefix as an env called "DISCORD_BOT_PREFIX"
+This bot now uses slash commands!
 
 ## Getting started
 1. Clone this repository
